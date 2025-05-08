@@ -1,0 +1,75 @@
+#!/bin/bash
+
+#SBATCH --ntasks=10
+#SBATCH --time=3-00
+#SBATCH --qos=bbdefault
+#SBATCH --account=catonim-epi-switch
+#SBATCH --constraint=icelake 
+#SBATCH --mail-type=ALL 
+#SBATCH --mail-user=DXB360@student.bham.ac.uk
+
+set –e 
+
+
+
+module purge
+module load bluebear 
+module load bear-apps/2022b/live
+module load Python/3.10.8-GCCcore-12.2.0
+module load Seaborn/0.12.2-foss-2022b
+module load matplotlib/3.7.0-gfbf-2022b 
+module load picard/2.27.5-Java-11
+module unload Java/11.0.18
+module load Java/17.0.6
+module load SAMtools/1.17-GCC-12.2.0
+module load GATK/4.4.0.0-GCCcore-12.2.0-Java-17
+
+
+
+bsmk_bam_location="/rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/Bismark_output/Aligned_trim_01/"
+sample_bam="/rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/Bismark_output/Aligned_trim_01/A3_9319_1_bismark_bt2_pe.bam"
+sample_name="A3_9319_1"
+mkdir "/rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/${sample_name}"
+
+
+sample_dir="/rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/A3_9319_1/"
+sorted_bam="/rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/A3_9319_1/A3_9319_1_bismark_bt2_pe_sorted.bam"
+ref_location="/rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/hazel_ref_gen/GCF_901000735.1/fasta_ref/GCF_901000735.1_CavTom2PMs-1.0_genomic.fa" 
+
+
+# input file directory
+# input1_dir="/rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/Bismark_output/Aligned_trim_01"
+# output file directory
+# output1_dir="/rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/Bismark_output/BisSNP_test_all_01"
+# reference genome path
+# reference_genome="/rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/hazel_ref_gen/GCF_901000735.1/fasta_ref/GCF_901000735.1_CavTom2PMs-1.0_genomic.fa" 
+
+
+# picard fixing 
+
+java -Xmx4g -jar /rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/OakHazel-Epimapper/tools/BisSNP/picard.jar AddOrReplaceReadGroups \
+ I= "$sample_bam" \
+ O= "$sorted_bam" \
+ RGID= "$sample_name" \
+ RGLB= "Unknown" \
+ RGPL= "ILLUMINA" \
+ RGPU= "FKDN230267090" \
+ RGSM= "$sample_name" \
+ CREATE_INDEX=true
+
+rm /rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/A3_9319_1/A3_9319_1_bismark_bt2_pe_sorted.bam.tmp.*
+
+# sort the bam file generated from bismark 
+samtools sort -o ${sorted_bam} ${sample_bam}
+
+# index the bam file generated from bismark
+samtools index ${sorted_bam}
+
+# BisSNP caller
+java -Xmx4g -jar /rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/OakHazel-Epimapper/tools/BisSNP/BisSNP-0.80.jar \
+ -R "${ref_location}" \
+ -T BisulfiteGenotyper \
+ -I "${sorted_bam}" \
+ -vfn1 "${sample_dir}/${sample_name}_cpg.raw.vcf" \
+ -vfn2 "${sample_dir}/${sample_name}_snp.raw.vcf"
+

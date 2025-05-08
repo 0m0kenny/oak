@@ -1,0 +1,107 @@
+#!/bin/bash
+
+#SBATCH --ntasks=10
+#SBATCH --time=3-00
+#SBATCH --qos=bbdefault
+#SBATCH --account=catonim-epi-switch
+#SBATCH --constraint=icelake 
+#SBATCH --mail-type=ALL 
+
+set –e 
+
+
+
+module purge
+module load bluebear 
+module load bear-apps/2022b/live
+module load Python/3.10.8-GCCcore-12.2.0
+module load Seaborn/0.12.2-foss-2022b
+module load matplotlib/3.7.0-gfbf-2022b 
+module load picard/2.27.5-Java-11
+module unload Java/11.0.18
+module load Java/17.0.6
+module load SAMtools/1.17-GCC-12.2.0
+module load GATK/4.4.0.0-GCCcore-12.2.0-Java-17
+
+
+
+# input file directory
+input_bam_dir="/rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/Bismark_output/Aligned_trim_01/"
+# output file directory
+output_bissnp="/rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/tools/BisSNP/"
+# reference genome path
+reference_genome="/rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/hazel_ref_gen/GCF_901000735.1/fasta_ref/GCF_901000735.1_CavTom2PMs-1.0_genomic.fa" 
+
+
+# Loop for iterating over all .bam files in the input directory
+for sample_bam in ${input_bam_dir}/*.bam; do
+
+  bsmk_bam_location="$input_bam_dir"
+  ref_location="$reference_genome" 
+  
+  #extracting the sample name from the BAM file name
+  sample_name=$(basename "$sample_bam" "_bismark_bt2_pe.bam")
+
+  # sample_bam="/rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/Bismark_output/Aligned_trim_01/A3_9319_1_bismark_bt2_pe.bam"
+  sample_bam="$input_bam_dir/${sample_name}_bismark_bt2_pe.bam"
+
+
+  #creates output directory for the current sample if it doesn't exist
+  #mkdir -p "$output_bissnp/$sample_name"
+  #sample_dir="/rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/data/A3_9319_1/"
+  mkdir -p "$output_bissnp/$sample_name"
+  sample_dir="$output_bissnp/$sample_name"
+
+  #sample_dir=$(mkdir -p "$output_bissnp/$sample_name" && echo "$output_bissnp/$sample_name")
+
+
+  #sorting the BAM file by their genomic coordinates
+  sorted_bam="$sample_dir/${sample_bam}_bismark_bt2_pe_sorted.bam"
+
+  # picard fixing 
+  java -Xmx4g -jar /rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/OakHazel-Epimapper/tools/BisSNP/picard.jar AddOrReplaceReadGroups \
+   I= "$sample_bam" \
+   O= "$sorted_bam" \
+   RGID= "$sample_name" \
+   RGLB= "Unknown" \
+   RGPL= "ILLUMINA" \
+   RGPU= "FKDN230267090" \
+   RGSM= "$sample_name" \
+   CREATE_INDEX=true
+
+
+  rm "$sample_dir/${sample_bam}_bismark_bt2_pe_sorted.bam".tmp.*
+
+   # wait for sorting to finish
+  wait
+
+  # sort the bam file generated from bismark 
+  samtools sort -o "$sorted_bam" "$sample_bam"
+
+  # index the bam file generated from bismark
+  samtools index "$sorted_bam"
+
+
+  # BisSNP caller
+  java -Xmx4g -jar /rds/projects/l/lunadiee-epi-virtualmchine/Students/gp_project_MSKD/OakHazel-Epimapper/tools/BisSNP/BisSNP-0.80.jar \
+   -R "${ref_location}" \
+   -T BisulfiteGenotyper \
+   -I "${sorted_bam}" \
+   -vfn1 "${sample_dir}/${sample_name}_cpg.raw.vcf" \
+   -vfn2 "${sample_dir}/${sample_name}_snp.raw.vcf"
+
+  echo "BisSNP analysis completed for $sample_name"
+done
+echo "All BisSNP analyses completed."
+
+
+
+
+
+
+
+ 
+
+
+
+

@@ -2,13 +2,13 @@
 
 
 // params. use --parameter_name to change parameter
-params.paired_reads = './data/reads/R10/*{1,2}.fq.gz' // remember to change this to null. Use example --paired_reads='./data/reads/*{1,2}.fq.gz'
-params.reference_genome= "${baseDir}/data/references/Hazelnut_CavTom2PMs-1.0/GCF_932294415.1" //This path should be the full path to reference genome. 
-params.reference_name = "GCF_932294415.1_dhQueRobu3.1_genomic.fa"
-params.pipeline_loc = "/rds/projects/h/hejq-msc-2024-wgbs/Test_Sbatch/" //full path such as full/path/to/Hazexplore/
+params.paired_reads = "./data/reads/.../*{1,2}.fq.gz" // Use example --paired_reads='./data/reads/*{1,2}.fq.gz'
+params.reference_genome= "./data/references/..." //This path should be the path to reference genome. 
+params.reference_name = "reference_genome.fa"
+params.pipeline_loc = "${baseDir}" //full path to the pipeline location.
 params.results = "./results"
-params.temps = "${baseDir}/temps"
-params.index_requirement = 0 //change this to null 
+params.temps = "./temps"
+params.index_requirement = 1 //change this to null if the reference is already indexed.
 params.parallelize = 4
 params.threads = 6
 
@@ -26,6 +26,7 @@ if (params.help){
     --index_requirement=<value>   Specify an integer (0 or 1) to indicate if indexing the reference genome is required (0: not required, 1: required).
     --parallelize=<value>         Specify the level of parallelization (default: 1).
     --threads=<value>             Specify the number of threads to use for parallel tasks (default: 6).
+    --params.pipeline_loc=<path>  Path to the pipeline location. Use full path. Default is current directory
     --help                        Display this help message and exit.
     """
     exit (" ")
@@ -112,10 +113,10 @@ process INDEX{
     
     bismark_genome_preparation --bowtie2 --verbose ${reference_genome} / 
     """
-// change path to aligner so it not /usr/bin/bowtie2, but just bowtie2.  
+  
 }
 
-// creates sequence dictionary for reference genome for use during BIS SNP
+// creates sequence dictionary for reference genome for use with BIS SNP
 process PICARD_DICT{
 
     publishDir "${params.reference_genome}/"
