@@ -1,7 +1,7 @@
 
 # Hazexplorer2.0 :deciduous_tree: :compass:
 
-This is an updated version of the HazelExplorer Pipeline that can be found [GitHub Pages](https://github.com/marcellobeltrami/Hazexplorer)
+This is an updated version of the [HazelExplorer Pipeline](https://github.com/marcellobeltrami/Hazexplorer).
 
 ![alt text](Hazexplorer_logo.png)
 
