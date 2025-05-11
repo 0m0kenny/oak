@@ -15,3 +15,7 @@ DEPENDENCY scripts are quite important especially as they allow parallelization 
 6) **BisSNP_caller.sh**: is a script carrying out SNP calling for one BAM file using BisSNP. (STANDALONE)
  
 7) **CGmap_caller.sh**: is a script carrying out SNP calling for one BAM file using CGmap. (STANDALONE)
+
+8) **confirm_output.sh**: is a script counting total number of results (useful when running multiplejob.sh to confirm all input files ran)
+
+9) **bsnp_merge_lanes.sh**: is a script that concatentates bis-snp '*.snp.raw.vcf' files with multiple lanes into one vcf file then merges all vcfs into one big merged file.
