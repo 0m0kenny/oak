@@ -113,18 +113,27 @@ nextflow run main_hazex_v.2.nf --help
 
 ### Architecture
 The Oak Directory structure is as follows:
-- **bin**: contains custom scripts for alignment, SNP calling, and others. Although these are not directly used by slurm, we decided to provide them for free use.    
+- **bin/bash**: contains custom bash scripts for alignment, SNP calling, downstream processing of VCF files and others. Although these are not directly used by slurm, we decided to provide them for free use.
+    > [!TIP]
+    > A README is available [here](https://github.com/0m0kenny/oak/blob/main/bin/bash/README_bash.md)
 
 - **data**: default directory where reads for data for analysis will be looked for. 
 
 - **results**: default directory where results will be saved.
 
-- **logs**: as this tool is meant to be used with slurm scheduler, logs from slurm jobs will be stored here.
-
 - **work**: will be generate at Nextflow runtime and will contain temporary files and other files generated during analysis. 
 
 
 
-### After generating the vcf files. Here are lists of useful scripts that can be used for downstream analysis:
+### After generating the vcf files. Here are lists of useful scripts that can be used for downstream analysis (found in the bin folder):
+> [!TIP]
+> Can adapt any of these files to suit your needs.
 
+- **bsnp_merge_lanes.sh** - useful for sequenced samples on multiple lanes. This script will concat each vcf into a single vcf then merge the lanes. For BIS-SNP output VCF only.
+
+- **cgmap_contig.sh** - useful for CGMapTools output VCF as these files have no contig information which is necessary for sorting and indexing the files. This script will add the contig from the reference genome.
+
+- **cgmap_merge.sh** - useful for sequenced samples on multiple lanes. This script will concat each vcf into a single vcf then merge the lanes. For CGMapTools output VCF only.
+    > [!WARNING]
+    > Make sure the VCF files have had the contig info added before attempting merge.
 
