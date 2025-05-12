@@ -19,3 +19,7 @@ DEPENDENCY scripts are quite important especially as they allow parallelization 
 8) **confirm_output.sh**: is a script counting total number of results (useful when running multiplejob.sh to confirm all input files ran)
 
 9) **bsnp_merge_lanes.sh**: is a script that concatentates bis-snp '*.snp.raw.vcf' files with multiple lanes into one vcf file then merges all vcfs into one big merged file.
+
+10) **bcgmap_contig.sh**: is a script that adds contig info to the cgmap '*_bayes.vcf' files from the reference genome. This is necessary before attempting to index, sort or merge these files.
+
+9) **cgmap_merge.sh**: is a script that concatentates cgmap '*_bayes.vcf' files with multiple lanes into one vcf file then merges all vcfs into one big merged file.

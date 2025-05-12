@@ -16,7 +16,7 @@ module load VCFtools/0.1.16-GCC-12.2.0
 module load bear-apps/2022b
 module load BCFtools/1.17-GCC-12.2.0
 
-# extract all the snp.raw.vcf from bis-snp a mergelist
+# extract all the snp.raw.vcf from results folders
 echo ""
 echo "-------------------------------------------------"
 outdir="/bsnp_files"
@@ -44,7 +44,7 @@ done
 #extract the main names from the sorted files without lane numbers
 echo ""
 echo "-------------------------------------------------"
-echo "extract the main names from the sorted files without lane numbers!"
+echo "extracting the main names from the sorted files without lane numbers!"
 find "$outdir" -name sorted_*.vcf.gz | sed -E 's#.*/sorted_(.*)_L[0-9]\.vcf\.gz#\1#' | sort -u > sample_names
 
 
@@ -98,4 +98,7 @@ do
 done
 
 #merge the files
+echo ""
+echo "-------------------------------------------------"
+echo "merging all the files into one vcf"
 bcftools merge $outdir/merged/*.vcf.gz -Oz -o $outdir/merged/bsnp_all_merged.vcf.gz
