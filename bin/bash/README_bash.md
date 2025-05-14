@@ -23,3 +23,7 @@ DEPENDENCY scripts are quite important especially as they allow parallelization 
 10) **bcgmap_contig.sh**: is a script that adds contig info to the cgmap '*_bayes.vcf' files from the reference genome. This is necessary before attempting to index, sort or merge these files.
 
 9) **cgmap_merge.sh**: is a script that concatentates cgmap '*_bayes.vcf' files with multiple lanes into one vcf file then merges all vcfs into one big merged file.
+
+10) **filter.sh**: is a script that filters the merged vcf files using PLINK. You can add more parameters as needed.
+
+11) **wcfst_matrix.sh**: is a script that calculates fst scores via vcftools for between population diversity.
