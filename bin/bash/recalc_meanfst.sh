@@ -12,7 +12,7 @@ output_file="$fst_path/bsnp_new_means.txt"
 for inputfile in $bsnp_fst_path/*.weir.fst
 do
   filename=$(basename "$inputfile")
-  # 
+  # Extract the mean FST score, ignoring lines with "nan" and replacing negative values with 0
  
   echo "Recalculating mean from $filename..."
   mean=$(grep -v "nan" "$inputfile" | \

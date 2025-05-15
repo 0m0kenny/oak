@@ -26,6 +26,8 @@ DEPENDENCY scripts are quite important especially as they allow parallelization 
 
 10) **filter.sh**: is a script that filters the merged vcf files using PLINK. You can add more parameters as needed.
 
-11) **wcfst_matrix.sh**: is a script that calculates fst scores via vcftools for between population diversity.
+11) **wcfst_matrix.sh**: is a script that calculates fst scores via vcftools (Weir and Cockernam Method) for between population diversity.
+
+12) **extract_fst.sh**: is a script that extracts the mean and weighted fst scores from the slurm logs or the fstlogs if fst calculated locally.
 
 12) **recalc_meanfst.sh**: is a script that recalculates the mean FST score, after replacing negative values with 0.
