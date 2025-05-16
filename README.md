@@ -129,6 +129,7 @@ The Oak Directory structure is as follows:
 > [!TIP]
 > Can adapt any of these files to suit your needs.
 
+- **confirm_output.sh** -  useful when running multiplejob.sh to confirm all input files ran suceesfully and generates the expected number of vcf files.
 - **bsnp_merge_lanes.sh** - useful for sequenced samples on multiple lanes. This script will concat each vcf into a single vcf then merge the lanes. For BIS-SNP output VCF only.
 
 - **cgmap_contig.sh** - useful for CGMapTools output VCF as these files have no contig information which is necessary for sorting and indexing the files. This script will add the contig from the reference genome.
