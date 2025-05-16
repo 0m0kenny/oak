@@ -20,12 +20,11 @@ DEPENDENCY scripts are quite important especially as they allow parallelization 
 
 9) **bsnp_merge_lanes.sh**: is a script that concatentates bis-snp '*.snp.raw.vcf' files with multiple lanes into one vcf file then merges all vcfs into one big merged file.
 
-10) **bcgmap_contig.sh**: is a script that adds contig info to the cgmap '*_bayes.vcf' files from the reference genome. This is necessary before attempting to index, sort or merge these files.
+10) **cgmap_contig.sh**: is a script that adds contig info to the cgmap '*_bayes.vcf' files from the reference genome. This is necessary before attempting to index, sort or merge these files.
 
 9) **cgmap_merge.sh**: is a script that concatentates cgmap '*_bayes.vcf' files with multiple lanes into one vcf file then merges all vcfs into one big merged file.
 
 10) **subset_vcf.sh**: is a script that subsets the merged vcf files and extracts site quality, allelic frequency and mean depth coverage for further evaluation in the '../R/stats.Rmd' file. Requires the vcflib package (version 1.0.9).
-
 
 11) **filter.sh**: is a script that filters the merged vcf files using PLINK. You can add more parameters as needed.
 
