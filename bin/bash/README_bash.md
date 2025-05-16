@@ -24,10 +24,13 @@ DEPENDENCY scripts are quite important especially as they allow parallelization 
 
 9) **cgmap_merge.sh**: is a script that concatentates cgmap '*_bayes.vcf' files with multiple lanes into one vcf file then merges all vcfs into one big merged file.
 
-10) **filter.sh**: is a script that filters the merged vcf files using PLINK. You can add more parameters as needed.
+10) **subset_vcf.sh**: is a script that subsets the merged vcf files and extracts site quality, allelic frequency and mean depth coverage for further evaluation in the '../R/stats.Rmd' file. Requires the vcflib package (version 1.0.9).
 
-11) **wcfst_matrix.sh**: is a script that calculates fst scores via vcftools (Weir and Cockernam Method) for between population diversity.
 
-12) **extract_fst.sh**: is a script that extracts the mean and weighted fst scores from the slurm logs or the fstlogs if fst calculated locally.
+11) **filter.sh**: is a script that filters the merged vcf files using PLINK. You can add more parameters as needed.
 
-12) **recalc_meanfst.sh**: is a script that recalculates the mean FST score, after replacing negative values with 0.
+12) **wcfst_matrix.sh**: is a script that calculates fst scores via vcftools (Weir and Cockernam Method) for between population diversity.
+
+13) **extract_fst.sh**: is a script that extracts the mean and weighted fst scores from the slurm logs or the fstlogs if fst calculated locally.
+
+14) **recalc_meanfst.sh**: is a script that recalculates the mean FST score, after replacing negative values with 0.
