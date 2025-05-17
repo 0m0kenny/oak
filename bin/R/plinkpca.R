@@ -21,6 +21,7 @@ snpgdsSummary(b_genofile)
 sample.id <- read.gdsn(index.gdsn(b_genofile, "sample.id"))
 
 # PC scores
+#get the percent of variance explained by each PC
 b_pc.percent <- b_pca$varprop * 100
 b_pc.df <- data.frame(PC1 = b_pca$eigenvect[,1], 
                     PC2 = b_pca$eigenvect[,2], 
@@ -59,6 +60,7 @@ snpgdsSummary(c_genofile)
 sample.id <- read.gdsn(index.gdsn(c_genofile, "sample.id"))
 
 # PC scores
+#get the percent of variance explained by each PC
 c_pc.percent <- c_pca$varprop * 100
 c_pc.df <- data.frame(PC1 = c_pca$eigenvect[,1], 
                     PC2 = c_pca$eigenvect[,2], 
@@ -66,6 +68,7 @@ c_pc.df <- data.frame(PC1 = c_pca$eigenvect[,1],
 #name your population groups                    
 b_pc.df$Population <- factor(c("pop1", "pop2",))
 
+#plot PCs
 ggplot(c_pc.df, aes(x = PC1, y = PC2, label = Sample,color = Group)) +
   geom_point() +
   labs(x = paste0("PC1 (", round(c_pc.percent[1], 2), "%)"),
