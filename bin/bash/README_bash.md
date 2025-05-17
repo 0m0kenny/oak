@@ -34,4 +34,4 @@ DEPENDENCY scripts are quite important especially as they allow parallelization 
 
 14) **recalc_meanfst.sh**: is a script that recalculates the mean FST score, after replacing negative values with 0.
 
-11) **vcf_to_plink.sh**: is a script that converts the merged vcf files to .bed format via PLINK (version 1.9b). You can add more parameters as needed. This allows for a more efficient use of the vcf files in R - requires SNPRelate package in R to load the PLINK files.
+11) **vcf_to_plink.sh**: is a script that converts the merged vcf files to .bed format via PLINK (version 1.9b). You can add more parameters as needed. This allows for a more efficient use of the vcf files in R - requires SNPRelate package in R to load the PLINK files. Check out the '../R/plinkpca.Rmd' file for clustering of the vcf in R in a PCA plot.
