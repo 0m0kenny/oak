@@ -33,3 +33,5 @@ DEPENDENCY scripts are quite important especially as they allow parallelization 
 13) **extract_fst.sh**: is a script that extracts the mean and weighted fst scores from the slurm logs or the fstlogs if fst calculated locally.
 
 14) **recalc_meanfst.sh**: is a script that recalculates the mean FST score, after replacing negative values with 0.
+
+11) **vcf_to_plink.sh**: is a script that converts the merged vcf files to .bed format via PLINK (version 1.9b). You can add more parameters as needed. This allows for a more efficient use in R.
