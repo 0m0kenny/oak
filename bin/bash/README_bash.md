@@ -26,7 +26,7 @@ DEPENDENCY scripts are quite important especially as they allow parallelization 
 
 10) **subset_vcf.sh**: is a script that subsets the merged vcf files and extracts site quality, allelic frequency and mean depth coverage for further evaluation in the '../R/stats.Rmd' file. Requires the vcflib package (version 1.0.9).
 
-11) **filter_vcf.sh**: is a script that filters the merged vcf files using PLINK (version 1.9b). You can add more parameters as needed. 
+11) **filter_vcf.sh**: is a script that filters the merged vcf files using the stats derived from '../R/stats.Rmd', or your own parameters. You can add more parameters as needed. 
 
 12) **wcfst_matrix.sh**: is a script that calculates fst scores via vcftools (Weir and Cockernam Method) for between population diversity.
 
