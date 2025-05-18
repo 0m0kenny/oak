@@ -9,10 +9,12 @@ snpgdsBED2GDS(bed.fn = "bsnp_filt_plink.vcf.gz.bed",
               out.gdsfn = "bsnp_filt_plink.vcf.gz.gds")
 
 
+#open the .gds file
 b_genofile <- snpgdsOpen("bsnp_filt_plink.vcf.gz.gds")
+#cluster by PCA
 b_pca <- snpgdsPCA(b_genofile, autosome.only = FALSE)  # autosome.only=FALSE if you want all chromosomes
 
-#get summary fo the gds file
+#get summary for the gds file
 snpgdsSummary(b_genofile)
 
 
@@ -34,7 +36,7 @@ b_pc.df$Population <- factor(c("pop1", "pop2",))
 ggplot(b_pc.df, aes(x = PC1, y = PC2, label = Sample,color = Population)) +
   geom_point() +
   labs(x = paste0("PC1 (", round(b_pc.percent[1], 2), "%)"),
-       y = paste0("PC2 (", round(b_pc.percent[2], 2), "%)"), title = "Oak Tree Populations (Bis-SNP) (Filtered)") +
+       y = paste0("PC2 (", round(b_pc.percent[2], 2), "%)"), title = "Populations (Bis-SNP) (Filtered)") +
   theme_classic()
 
 #close the gds file
@@ -47,8 +49,9 @@ snpgdsBED2GDS(bed.fn = "cgmap_filt_plink.vcf.gz.bed",
               fam.fn = "cgmap_filt_plink.vcf.gz.fam",
               out.gdsfn = "cgmap_filt_plink.vcf.gz.gds")
 
-
+#open the .gds file
 c_genofile <- snpgdsOpen("cgmap_filt_plink.vcf.gz.gds")
+#cluster by PCA
 c_pca <- snpgdsPCA(c_genofile, autosome.only = FALSE)  # autosome.only=FALSE if you want all chromosomes
 
 #get summary fo the gds file
@@ -66,13 +69,13 @@ c_pc.df <- data.frame(PC1 = c_pca$eigenvect[,1],
                     PC2 = c_pca$eigenvect[,2], 
                     Sample = sample.id)
 #name your population groups                    
-b_pc.df$Population <- factor(c("pop1", "pop2",))
+b_pc.df$Population <- factor(c("pop1", "pop2"))
 
 #plot PCs
 ggplot(c_pc.df, aes(x = PC1, y = PC2, label = Sample,color = Group)) +
   geom_point() +
   labs(x = paste0("PC1 (", round(c_pc.percent[1], 2), "%)"),
-       y = paste0("PC2 (", round(c_pc.percent[2], 2), "%)"), title = "Oak Tree Populations (CGmapTools) (Filtered)") +
+       y = paste0("PC2 (", round(c_pc.percent[2], 2), "%)"), title = "Populations (CGmapTools) (Filtered)") +
   theme_classic()
 
 #close the gds file
