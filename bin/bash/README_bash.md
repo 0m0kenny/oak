@@ -35,3 +35,5 @@ DEPENDENCY scripts are quite important especially as they allow parallelization 
 16) **extract_fst.sh**: is a script that extracts the mean and weighted fst scores from the slurm logs or the fstlogs if fst calculated locally.
 
 17) **recalc_meanfst.sh**: is a script that recalculates the mean FST score, after replacing negative values with 0.
+
+18) **pre_index.sh**: is a script that indexes the reference genome useful before running a multiplejob.sh script. 

@@ -102,6 +102,9 @@ sbatch nextflow run main_hazex_v.2.nf \
 > [!TIP]
 > Multiple sequencing data of the same species can be run in parallel via the multiplejob.sh script
 > A list of the filepaths of data should be stored in a "input_list.txt" file.
+> [!WARNING] 
+> The --index_requirement parameter should be 0 when running multiplejob.sh as this will cause overwriting of the same files in the data/references/ref_genome/Bisulfite_Genome folder causing issues and job failure.
+> Use the bin/bash/pre_index.sh file to first index the reference genome before running multiplejob.sh and set --index_requirement 0.
 
 
 ### Help
@@ -122,7 +125,6 @@ The Oak Directory structure is as follows:
 - **results**: default directory where results will be saved.
 
 - **work**: will be generate at Nextflow runtime and will contain temporary files and other files generated during analysis. 
-
 
 
 ### After generating the vcf files. Here are lists of useful scripts that can be used for downstream analysis (found in the bin folder):
