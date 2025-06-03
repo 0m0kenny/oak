@@ -99,7 +99,7 @@ process INDEX{
     input: 
         path reference_genome
     output: 
-        path "${params.reference_name}/*"
+        path "${params.reference_name}/Bisulfite_Genome", emit: indexed_reference_directory
     script:
 
     """
@@ -406,7 +406,7 @@ workflow{
     //called if reference genome is custom and needs to be indexed.
     if (params.index_requirement == 1){
         indexed_reference = INDEX(params.reference_genome)
-        aligned_bam = ALIGNMENT(paired_trimmed, params.reference_genome)
+        aligned_bam = ALIGNMENT(paired_trimmed, indexed_reference)
         picard_out = PICARD(aligned_bam)
         sort_out = SORTING(picard_out)
         bis_snp_out = BIS_SNP(sort_out)
