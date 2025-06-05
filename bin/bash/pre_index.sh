@@ -16,5 +16,11 @@ module load bear-apps/2021b
 module load Bismark/0.24.2-foss-2021b
 
 reference_genome="<path_to_ref_genome_folder>" # the folder where the ref genome is in
-
+reference_name="<ref_genome_filename>"
+echo ""
+echo "creating bismark index"
 bismark_genome_preparation --bowtie2 --verbose ${reference_genome} /
+
+echo ""
+echo "creating .fai file"
+samtools faidx ${reference_genome}/${reference_name}
