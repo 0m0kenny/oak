@@ -22,7 +22,7 @@ module load PLINK/1.9b_6.24-x86_64
 echo ""
 echo "-------------------------------------------------"
 
-outdir="<path_to_directory>"
+outdir="<path_to_directory_for_output_files>"
 
 mkdir -p "$outdir"
 
