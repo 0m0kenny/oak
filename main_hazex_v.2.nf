@@ -116,39 +116,7 @@ process INDEX{
   
 }
 
-// creates sequence dictionary for reference genome for use with BIS SNP
-process PICARD_DICT{
 
-    publishDir "${params.reference_genome}/"
-
-    input: 
-        path "${params.reference_name}"
-        
-    //output
-        //path "${params.reference_genome}/"
-
-    script:
-
-
-    """
-    set -e 
-
-    module purge; module load bluebear
-    module load bear-apps/2022a/live
-    module load bear-apps/2022b/live
-    module load Java/17.0.6
-    
-    if [! -f ${params.reference_name}.dict]; then
-    
-        java -Xmx4g -jar ${params.pipeline_loc}/tools/picard.jar CreateSequenceDictionary \
-        R=${params.reference_genome}/${params.reference_name} \
-        TRUNCATE_NAMES_AT_WHITESPACE=true NUM_SEQUENCES=2147483647 VERBOSITY=INFO QUIET=false \
-        VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false \
-        CREATE_MD5_FILE=false 
-
-    fi
-    """
-}
 
 process FAST_QC{
     tag {sampleId}
@@ -390,7 +358,6 @@ workflow{
     
     paired_trimmed = TRIM(paired_reads_ch)
     FAST_QC(paired_trimmed) //produces a QC report of trimmed reads. 
-    PICARD_DICT(params.reference_genome)
    
     //called if reference genome is default or does not need indexing.
     if (params.index_requirement == 0){
