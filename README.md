@@ -100,11 +100,18 @@ sbatch nextflow run main_hazex_v.2.nf \
 ```
 
 > [!TIP]
+
 > Multiple sequencing data of the same species can be run in parallel via the multiplejob.sh script
+
 > A list of the filepaths of data should be stored in a "input_list.txt" file.
+
 > [!WARNING] 
+
 > The --index_requirement parameter should be 0 when running multiplejob.sh as this will cause overwriting of the same files in the data/references/ref_genome/Bisulfite_Genome folder causing issues and job failure.
-> Use the bin/bash/pre_index.sh file to first index the reference genome before running multiplejob.sh and set --index_requirement 0.
+
+> Before running multiplejob.sh, use the bin/bash/pre_index.sh file to first index the reference genome and bin/bash/picard_dict.sh to create a sequence dictionary for the reference genome.
+
+> Then submit multiplejob.sh and set --index_requirement 0.
 
 
 ### Help
@@ -139,4 +146,6 @@ The Oak Directory structure is as follows:
 - **cgmap_merge.sh** - useful for sequenced samples on multiple lanes. This script will concat each vcf into a single vcf then merge the lanes. For CGMapTools output VCF only.
     > [!WARNING]
     > Make sure the VCF files have had the contig info added before attempting merge.
+
+- **merge_lanes.sh** - useful for sequenced samples on multiple lanes. This script will concat each vcf into a single vcf then merge the lanes. For Both BIS-SNP and CGMapTools output.
 
