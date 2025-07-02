@@ -149,3 +149,11 @@ The Oak Directory structure is as follows:
 
 - **merge_lanes.sh** - useful for sequenced samples on multiple lanes. This script will concat each vcf into a single vcf then merge the lanes. For Both BIS-SNP and CGMapTools output.
 
+- **cgmap_cov_filt-plink_tree** - useful for merged cgmap vcf output from `merge_lanes.sh` . This script is an array slurm job that will filter the merged vcf by removing snp where at least one sample has less than a specific Read Depth (DP). Requires an input file with the list of the DP to filter by. The filtered VCFs will be converted into PLINK files which can be loaded into R for visualisation. A Clustering Tree of the samples will also be created. For CGMapTools output only.
+    > [!WARNING]
+    > The Tree requires a specific conda environment. Make sure to run `conda_env` once before running this script. Can comment out the code if the tree is not required.
+
+- **bsnp_cov_filt-plink_tree** - useful for merged bsnp vcf output from `merge_lanes.sh` . This script is an array slurm job that will filter the merged vcf by removing snp where at least one sample has less than a specific Read Depth (DP). Requires an input file with the list of the DP to filter by. The filtered VCFs will be converted into PLINK files which can be loaded into R for visualisation. A Clustering Tree of the samples will also be created. For CGMapTools output only.
+    > [!WARNING]
+    > The Tree requires a specific conda environment. Make sure to run `conda_env` once before running this script. Can comment out the code if the tree is not required.
+
