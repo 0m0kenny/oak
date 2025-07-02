@@ -1,102 +1,115 @@
 ```{r}
 library(SNPRelate)
+library(viridis)
 library(ggplot2)
-
+library(tidyverse)
+```
+```{r}
+#add metadata for the samples
+amb_metadata<- data.frame(
+  Sample = c("R10", "R5", "A", "R4", "R3", "B", "Aa6387J","Aa8673J", "Aa6387S", "Aa8673S", "Aa8749S", "P63872", "P63875", "P86734"), 
+  Population = c( "SprAmbP", "SprAmbP", "SprAmbP", "SprAmbP", "SprAmbP", "SprAmbP", "SumAmbP", "SumAmbP", "AutAmbP", "AutAmbP", "AutAmbP", "AmbO", "AmbO", "AmbO"),
+  Hierarchy = c("Parent","Parent","Parent","Parent","Parent", "Parent", "Parent", "Parent", "Parent", "Parent","Parent", "Offspring", "Offspring", "Offspring" ),
+  Season = c("Spring","Spring","Spring","Spring","Spring", "Spring", "Summer", "Summer", "Autumn", "Autumn","Autumn", "Offspring", "Offspring", "Offspring" ),
+  Individual = c("Individual_4","Individual_5","Family_1","Family_2","Family_3", "Individual_6", "Family_1", "Family_2", "Family_1", "Family_2","Family_3", "Family_1", "Family_1", "Family_2" ))
+```
+```{r}
 # Convert bsnp PLINK files to GDS
-snpgdsBED2GDS(bed.fn = "bsnp_filt_plink.vcf.gz.bed",
-              bim.fn = "bsnp_filt_plink.vcf.gz.bim",
-              fam.fn = "bsnp_filt_plink.vcf.gz.fam",
-              out.gdsfn = "bsnp_filt_plink.vcf.gz.gds")
+snpgdsBED2GDS(bed.fn = "bsnp_c3_allele.vcf.gz.bed",
+              bim.fn = "bsnp_c3_allele.vcf.gz.bim",
+              fam.fn = "bsnp_c3_allele.vcf.gz.fam",
+              out.gdsfn = "bsnp_c3_allele.vcf.gz.gds")
 ```
 
+## Bis-SNP
 ```{r}
 #open the .gds file
-b_genofile <- snpgdsOpen("bsnp_filt_plink.vcf.gz.gds")
+b_genofile <- snpgdsOpen("bsnp_c3_allele.gds")
 
-#cluster by PCA
-b_pca <- snpgdsPCA(b_genofile, autosome.only = FALSE)  # autosome.only=FALSE if you want all chromosomes
-```
+#convert to snpgdsPCA object - can filter by maf or missing rate 
+b_pca <- snpgdsPCA(b_genofile, autosome.only = FALSE) 
+#b_pca <- snpgdsPCA(b_genofile, autosome.only = FALSE, maf =0.39)
+#b_pca <- snpgdsPCA(b_genofile, autosome.only = FALSE, maf = 0.14, missing.rate = 0.8)
 
-```{r}
-#get summary for the gds file
-snpgdsSummary(b_genofile)
-```
-
-```{r}
 # Sample IDs
 sample.id <- read.gdsn(index.gdsn(b_genofile, "sample.id"))
 
+#close the gds file
+snpgdsClose(b_genofile)
+
 # PC scores
-#get the percent of variance explained by each PC
 b_pc.percent <- b_pca$varprop * 100
-b_pc.df <- data.frame(PC1 = b_pca$eigenvect[,1], 
-                    PC2 = b_pca$eigenvect[,2], 
+b_pc.df <- data.frame(PC1 = b_pca$eigenvect[,1],
+                    PC2 = b_pca$eigenvect[,2],
                     Sample = sample.id)
 
-#name your population groups   
-b_pc.df$Population <- factor(c("pop1", "pop2",))
+#add metadata
+b_pc.df <- b_pc.df %>%
+  left_join(amb_metadata, by = "Sample")
+
+#set colours for seasons
+colors = viridis(4)
 
 #plot PCs
-ggplot(b_pc.df, aes(x = PC1, y = PC2, label = Sample,color = Population)) +
-  geom_point() +
+ggplot(b_pc.df, aes(x = PC1, y = PC2, label = Sample,color = Season, shape= Individual)) +
+  geom_point(aes(colour = Season ), size=3, stroke = 1.5) + 
+  scale_shape_manual(values=c(1,2,3,4,5,6))+ 
+  scale_color_manual(values = viridis(4),limits=c('Spring', 'Summer', 'Autumn', 'Offspring'))+
   labs(x = paste0("PC1 (", round(b_pc.percent[1], 2), "%)"),
-       y = paste0("PC2 (", round(b_pc.percent[2], 2), "%)"), title = "Populations (Bis-SNP) (Filtered)") +
-  theme_classic()
-```
-```{r}
-#close the gds file
-snpgdsClose(b_genofile) 
+       y = paste0("PC2 (", round(b_pc.percent[2], 2), "%)"), title = "Bis-SNP (DP>3, C/T, G/A filtered,MAF=0.39)") +
+  theme_classic()+ theme(
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.3,margin = margin(b = 20)))
+
 ```
 
-```{r}
+## CGMAPTools
 
+```{r}
 # Convert cgmap PLINK files to GDS
-snpgdsBED2GDS(bed.fn = "cgmap_filt_plink.vcf.gz.bed",
-              bim.fn = "cgmap_filt_plink.vcf.gz.bim",
-              fam.fn = "cgmap_filt_plink.vcf.gz.fam",
-              out.gdsfn = "cgmap_filt_plink.vcf.gz.gds")
+snpgdsBED2GDS(bed.fn = "cgmap_c5_allele.bed",
+              bim.fn = "cgmap_c5_allele.bim",
+              fam.fn = "cgmap_c5_allele.fam",
+              out.gdsfn = "cgmap_c5_allele.gds")
 ```
 
 ```{r}
 #open the .gds file
-c_genofile <- snpgdsOpen("cgmap_filt_plink.vcf.gz.gds")
+c_genofile <- snpgdsOpen("cgmap_c5_allele.gds")
 
-#cluster by PCA
-c_pca <- snpgdsPCA(c_genofile, autosome.only = FALSE)  # autosome.only=FALSE if you want all chromosomes
-```
+#convert to snpgdsPCA object - can filter by maf or missing rate 
+c_pca <- snpgdsPCA(c_genofile, autosome.only = FALSE)
+#c_pca <- snpgdsPCA(c_genofile, autosome.only = FALSE, maf =0.39)
+#c_pca <- snpgdsPCA(c_genofile, autosome.only = FALSE, maf = 0.071, missing.rate = 0.2)
 
-```{r}
-#get summary fo the gds file
-#snpgdsClose(c_genofile) 
-```
-
-
-```{r}
 # Sample IDs
 sample.id <- read.gdsn(index.gdsn(c_genofile, "sample.id"))
+#close the gds file
+snpgdsClose(c_genofile) 
+
 
 # PC scores
-#get the percent of variance explained by each PC
 c_pc.percent <- c_pca$varprop * 100
 c_pc.df <- data.frame(PC1 = c_pca$eigenvect[,1], 
                     PC2 = c_pca$eigenvect[,2], 
                     Sample = sample.id)
-#name your population groups 
-c_pc.df$Group <- factor(c("pop1", "pop2"))
+
+#add metadata
+c_pc.df <- c_pc.df %>%
+  left_join(amb_metadata, by = "Sample")
+
+#set colours for seasons
+colors = viridis(4)
 
 #plot PCs
-ggplot(c_pc.df, aes(x = PC1, y = PC2, label = Sample,color = Group)) +
-  geom_point() +
+ggplot(c_pc.df, aes(x = PC1, y = PC2, label = Sample,color = Season, shape= Individual)) +
+  geom_point(aes(colour = Season ), size=3, stroke = 1.5) + 
+  scale_shape_manual(values=c(1,2,3,4,5,6))+ 
+  scale_color_manual(values = viridis(4),limits=c('Spring', 'Summer', 'Autumn', 'Offspring'))+
   labs(x = paste0("PC1 (", round(c_pc.percent[1], 2), "%)"),
-       y = paste0("PC2 (", round(c_pc.percent[2], 2), "%)"), title = "Populations (CGmapTools) (Filtered)") +
-  theme_classic()
+       y = paste0("PC2 (", round(c_pc.percent[2], 2), "%)"), title = "CGMapTools (DP>5 C/T, G/A filtered,MAF=0.39)") +
+  theme_classic()+ theme(
+    plot.title = element_text(size = 12, face = "bold", hjust = 0.3,margin = margin(b = 20)))
 
 
 
-```
-
-
-
-```{r}
-snpgdsSummary(c_genofile)
 ```
